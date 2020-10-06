@@ -1,0 +1,10 @@
+*{
+  box-sizing:border-box;
+}
+
+#output{
+  margin:20px auto;
+  padding:20px;
+  background-color:pink;
+  max-width:600px;
+}
