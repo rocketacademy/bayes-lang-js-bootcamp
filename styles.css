@@ -2,7 +2,7 @@
   box-sizing:border-box;
 }
 
-#output{
+#container{
   margin:20px auto;
   padding:20px;
   background-color:pink;
