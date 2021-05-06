@@ -1,1 +1,1 @@
-# SWE1 Vanilla JS Starter Code
+# Rocket Academy Coding Bootcamp: Vanilla JS Starter
