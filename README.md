@@ -1,1 +1,2 @@
-# Rocket Academy Coding Bootcamp: Vanilla JS Starter
+# Rocket Academy Coding Bootcamp
+# Bayes Classifier in JS
