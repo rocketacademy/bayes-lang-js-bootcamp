@@ -7,16 +7,6 @@ const Bayes = function () {
     return [...new Set(arr)];
   };
 
-  const stemKey = function (stem, label) {
-    return "stem:" + stem + "::label:" + label;
-  };
-  const docCountKey = function (label) {
-    return "docCount:" + label;
-  };
-  const stemCountKey = function (stem) {
-    return "stemCount:" + stem;
-  };
-
   const log = function (text) {
     console.log(text);
   };
@@ -34,7 +24,8 @@ const Bayes = function () {
   };
 
   const stemLabelCount = function (stem, label) {
-    let count = parseInt(storage[stemKey(stem, label)]);
+    let sK = stem + "::label:" + label;
+    let count = parseInt(storage.stems[sK]);
     if (!count) count = 0;
     return count;
   };
@@ -49,12 +40,13 @@ const Bayes = function () {
   };
 
   const stemTotalCount = function (stem) {
-    let count = parseInt(storage[stemCountKey(stem)]);
+    let count = parseInt(storage.stemCount[stem]);
+    console.log('stem total count', stem, count );
     if (!count) count = 0;
     return count;
   };
   const docCount = function (label) {
-    let count = parseInt(storage[docCountKey(label)]);
+    let count = parseInt(storage.docCount[label]);
     if (!count) count = 0;
     return count;
   };
@@ -67,24 +59,32 @@ const Bayes = function () {
     }
     return total;
   };
-  const increment = function (key) {
-    let count = parseInt(storage[key]);
-    if (!count) count = 0;
-    storage[key] = parseInt(count) + 1;
-    return count + 1;
-  };
 
   const incrementStem = function (stem, label) {
-    increment(stemCountKey(stem));
-    increment(stemKey(stem, label));
+
+    let count = parseInt(storage.stemCount[stem]);
+    if (!count) count = 0;
+    storage.stemCount[stem] = parseInt(count) + 1;
+
+    let sK = stem + "::label:" + label;
+    count = parseInt(storage.stems[sK]);
+    if (!count) count = 0;
+    storage.stems[sK] = parseInt(count) + 1;
   };
 
   const incrementDocCount = function (label) {
-    return increment(docCountKey(label));
+    let count = parseInt(storage.docCount[label]);
+    if (!count) count = 0;
+    storage.docCount[label] = parseInt(count) + 1;
+    return count + 1;
   };
 
   const train = function (text, label) {
-    storage.labels.push(label);
+
+    if( storage.labels.includes( label ) === false ){
+      storage.labels.push(label);
+    }
+
     const words = tokenize(text);
     let length = words.length;
     for (let i = 0; i < length; i++) {
@@ -136,7 +136,7 @@ const Bayes = function () {
         }
 
         logSum += Math.log(1 - wordicity) - Math.log(wordicity);
-        log(label + "icity of " + word + ": " + wordicity);
+        console.log(label + "icity of " + word + ": " + wordicity);
       }
       scores[label] = 1 / (1 + Math.exp(logSum));
     }

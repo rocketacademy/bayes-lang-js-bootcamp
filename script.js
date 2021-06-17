@@ -1,4 +1,9 @@
-var storage = { labels: [] };
+var storage = {
+  stemCount:{},
+  docCount:{},
+  stems:{},
+  labels: []
+};
 const { train, guess, extractWinner } = Bayes();
 
 document.querySelector("#test_button").addEventListener("click", function () {
