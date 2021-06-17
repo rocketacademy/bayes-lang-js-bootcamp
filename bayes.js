@@ -8,13 +8,13 @@ const Bayes = function () {
   };
 
   const stemKey = function (stem, label) {
-    return "_Bayes::stem:" + stem + "::label:" + label;
+    return "stem:" + stem + "::label:" + label;
   };
   const docCountKey = function (label) {
-    return "_Bayes::docCount:" + label;
+    return "docCount:" + label;
   };
   const stemCountKey = function (stem) {
-    return "_Bayes::stemCount:" + stem;
+    return "stemCount:" + stem;
   };
 
   const log = function (text) {
@@ -33,30 +33,13 @@ const Bayes = function () {
     return useSet(text);
   };
 
-  const getLabels = function () {
-    let labels = storage["_Bayes::registeredLabels"];
-    if (!labels) labels = "";
-    return labels.split(",").filter(function (a) {
-      return a.length;
-    });
-  };
-
-  const registerLabel = function (label) {
-    const labels = getLabels();
-    if (labels.indexOf(label) === -1) {
-      labels.push(label);
-      storage["_Bayes::registeredLabels"] = labels.join(",");
-    }
-    return true;
-  };
-
   const stemLabelCount = function (stem, label) {
     let count = parseInt(storage[stemKey(stem, label)]);
     if (!count) count = 0;
     return count;
   };
   const stemInverseLabelCount = function (stem, label) {
-    const labels = getLabels();
+    const labels = storage["labels"];
     let total = 0;
     for (let i = 0, length = labels.length; i < length; i++) {
       if (labels[i] === label) continue;
@@ -76,7 +59,7 @@ const Bayes = function () {
     return count;
   };
   const docInverseCount = function (label) {
-    const labels = getLabels();
+    const labels = storage["labels"];
     let total = 0;
     for (let i = 0, length = labels.length; i < length; i++) {
       if (labels[i] === label) continue;
@@ -101,7 +84,7 @@ const Bayes = function () {
   };
 
   const train = function (text, label) {
-    registerLabel(label);
+    storage.labels.push(label);
     const words = tokenize(text);
     let length = words.length;
     for (let i = 0; i < length; i++) {
@@ -113,7 +96,7 @@ const Bayes = function () {
   const guess = function (text) {
     const words = tokenize(text);
     let length = words.length;
-    const labels = getLabels();
+    const labels = storage["labels"];
     let totalDocCount = 0;
     const docCounts = {};
     const docInverseCounts = {};
