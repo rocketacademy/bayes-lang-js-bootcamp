@@ -1,6 +1,6 @@
-const Bayes = function (Bayes) {
+const Bayes = function () {
   // store the labels
-  const storage = {};
+  // const storage = {};
 
   // Using sets
   const useSet = (arr) => {

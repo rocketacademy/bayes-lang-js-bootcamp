@@ -1,3 +1,4 @@
+var storage = {};
 const { train, guess, extractWinner } = Bayes();
 
 document.querySelector("#test_button").addEventListener("click", function () {
