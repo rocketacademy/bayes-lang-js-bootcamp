@@ -1,5 +1,9 @@
-body{
-  background-color:pink;
+body {
+  height: 100vh;
+  background-color: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 body,
@@ -24,3 +28,8 @@ p {
   text-align: center;
 }
 
+.input {
+  background-color: white;
+  padding: 20px;
+  margin: 20px;
+}

@@ -7,16 +7,32 @@
   </head>
 
   <body>
-    <div id="app"></div>
-    <textarea
-      id="test_phrase"
-      placeholder="Enter English, Spanish, or French text here."
-    ></textarea>
-    <button id="test_button">Guess Language</button>
-    <h2 id="test_result"></h2>
-    <p id="test_probability"></p>
+    <div id="container">
+      <div id="train" class="input">
+        <p>
+          <textarea
+            id="train_phrase"
+            placeholder="Training data: Enter English, Spanish, or French text here."
+          ></textarea>
+        </p>
+        <p>
+          <input id="language" placeholder="language" />
+        </p>
+        <button id="train_button">Train</button>
+      </div>
+      <div id="app" class="input">
+        <textarea
+          id="test_phrase"
+          placeholder="Enter English, Spanish, or French text here."
+        ></textarea>
+        <button id="test_button">Guess Language</button>
+        <h2 id="test_result"></h2>
+        <p id="test_probability"></p>
+        <p id="test_full_results"></p>
+      </div>
+    </div>
     <script src="bayes.js"></script>
-    <script src="script.js"></script>
     <script src="train-1.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>

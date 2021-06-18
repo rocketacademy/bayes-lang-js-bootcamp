@@ -29,6 +29,7 @@ const Bayes = function () {
     if (!count) count = 0;
     return count;
   };
+
   const stemInverseLabelCount = function (stem, label) {
     const labels = storage["labels"];
     let total = 0;
@@ -41,8 +42,8 @@ const Bayes = function () {
 
   const stemTotalCount = function (stem) {
     let count = parseInt(storage.stemCount[stem]);
-    console.log('stem total count', stem, count );
     if (!count) count = 0;
+    console.log("stem total count", stem, count);
     return count;
   };
   const docCount = function (label) {
@@ -61,7 +62,6 @@ const Bayes = function () {
   };
 
   const incrementStem = function (stem, label) {
-
     let count = parseInt(storage.stemCount[stem]);
     if (!count) count = 0;
     storage.stemCount[stem] = parseInt(count) + 1;
@@ -80,8 +80,7 @@ const Bayes = function () {
   };
 
   const train = function (text, label) {
-
-    if( storage.labels.includes( label ) === false ){
+    if (storage.labels.includes(label) === false) {
       storage.labels.push(label);
     }
 
@@ -110,34 +109,47 @@ const Bayes = function () {
       totalDocCount += parseInt(docCounts[label]);
     }
 
+    // for each language
     for (let j = 0; j < labels.length; j++) {
       let label = labels[j];
       let logSum = 0;
       let wordicity = 0;
       labelProbability[label] = docCounts[label] / totalDocCount;
 
+      // for every word in the input
       for (let i = 0; i < length; i++) {
         let word = words[i];
         let _stemTotalCount = stemTotalCount(word);
+
+        // if this word isn't in the training data, skip over it
         if (_stemTotalCount === 0) {
           continue;
-        } else {
-          let wordProbability = stemLabelCount(word, label) / docCounts[label];
-
-          let wordInverseProbability =
-            stemInverseLabelCount(word, label) / docInverseCounts[label];
-          wordicity =
-            wordProbability / (wordProbability + wordInverseProbability);
-
-          wordicity =
-            (1 * 0.5 + _stemTotalCount * wordicity) / (1 + _stemTotalCount);
-          if (wordicity === 0) wordicity = 0.01;
-          else if (wordicity === 1) wordicity = 0.99;
         }
 
+        let wordProbability = stemLabelCount(word, label) / docCounts[label];
+
+        let wordInverseProbability =
+          stemInverseLabelCount(word, label) / docInverseCounts[label];
+        wordicity =
+          wordProbability / (wordProbability + wordInverseProbability);
+
+        // adjust for rare words
+        wordicity =
+          (1 * 0.5 + _stemTotalCount * wordicity) / (1 + _stemTotalCount);
+
+        // log calculation won't like 0 or 1. adjust these values
+        if (wordicity === 0) {
+          wordicity = 0.01;
+        } else if (wordicity === 1) {
+          wordicity = 0.99;
+        }
+
+        // add to the logsum the probability of this word being the label (language )
         logSum += Math.log(1 - wordicity) - Math.log(wordicity);
         console.log(label + "icity of " + word + ": " + wordicity);
       }
+
+      // for one language, calculate the total probability given every word we trained over
       scores[label] = 1 / (1 + Math.exp(logSum));
     }
     return scores;
